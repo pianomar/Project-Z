@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, Text } from 'react-native'
+import React, { useState } from 'react';
+import { View, TouchableOpacity, TextInput, Text } from 'react-native';
 import { STRINGS } from '../../misc/Constants';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
-const Register = () => {
+const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
@@ -11,7 +11,7 @@ const Register = () => {
     function onSignup(params) {
         const auth = getAuth();
 
-        createUserWithEmailAndPassword(auth, email, password)
+        signInWithEmailAndPassword(auth, email, password)
             .then((result) => {
                 alert(result)
             }).catch((error) => {
@@ -21,11 +21,6 @@ const Register = () => {
 
     return (
         <View>
-            <TextInput
-                placeholder={STRINGS.name}
-                onChangeText={() => setName({ name })}
-            />
-
             <TextInput
                 placeholder={STRINGS.email}
                 returnKeyType="next"
@@ -54,4 +49,4 @@ const Register = () => {
     )
 }
 
-export default Register
+export default Login
