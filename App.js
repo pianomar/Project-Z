@@ -7,18 +7,22 @@ import RegisterScreen from './components/auth/Register';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import AppLoading from 'expo-app-loading';
-import { Text, View } from 'react-native';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import rootReducer from './components/redux/reducers';
+import MainScreen from './components/Main.js';
+import thunk from 'redux-thunk';
 
 const Stack = createNativeStackNavigator();
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
-export default function App () {
-  const app = initializeApp(FIREBASE_CONFIG);
+export default function App() {
+  initializeApp(FIREBASE_CONFIG);
   const [loggedIn, setLoggedIn] = useState(null)
   const [loaded, setLoaded] = useState(null)
 
   getAuth().onAuthStateChanged((user) => {
     if (!user) {
-      alert('no')
       setLoaded(true)
       setLoggedIn(false)
     } else {
@@ -40,7 +44,9 @@ export default function App () {
     )
   } else {
     return (
-      <View><Text>Logged In</Text></View>
+      <Provider store={store}>
+        <MainScreen />
+      </Provider>
     )
   }
 }
