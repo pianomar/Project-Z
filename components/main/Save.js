@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Image, TouchableOpacity, Text } from 'react-native'
+import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { STRINGS, DIMENS, COLORS, FIRESTORE } from '../../misc/Constants'
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -9,6 +9,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { getAuth } from 'firebase/auth';
 import { serverTimestamp, addDoc, getFirestore, collection, setDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
+import commonStyles from '../../styles/commonStyles';
 
 export default function Save(props) {
     const navigation = useNavigation();
@@ -52,20 +53,44 @@ export default function Save(props) {
     }
 
     return (
-        <View style={{ flex: 1 }}>
-            <Text>{progress}</Text>
+        <View style={styles.container}>
             <Image source={{ uri: uri }} />
             <TextInput
+                style={styles.captionText}
                 placeholder={STRINGS.caption}
                 onChangeText={(caption) =>
                     setCaption(caption)
                 }
             />
-            <TouchableOpacity
-                onPress={() => uploadImage()}>
-                <Ionicons name='md-cloud-upload' options size={DIMENS.iconSize} color={COLORS.active} />
-                <Text>Subir</Text>
-            </TouchableOpacity>
+            <View>
+                <TouchableOpacity
+                    style={[commonStyles.button, styles.uploadButton]}
+                    onPress={() => uploadImage()}>
+                    <Ionicons name='md-cloud-upload' options size={DIMENS.iconSize} color={COLORS.active} />
+                </TouchableOpacity>
+            </View>
+
+            <Text>{progress}</Text>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    captionText: {
+        height: DIMENS.buttonSize,
+        borderBottomColor: COLORS.active,
+        backgroundColor: COLORS.inactive,
+        borderBottomWidth: 1,
+        paddingLeft: 10,
+        borderRadius: DIMENS.buttonRadius,
+        width: "100%"
+    },
+    uploadButton: {
+        width: 200
+    }
+})

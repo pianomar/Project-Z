@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { COLORS, DIMENS, SCREENS } from '../../misc/Constants';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import commonStyles from '../../styles/commonStyles';
 
 export default function Add() {
     const [hasPermission, setHasPermission] = useState(null);
@@ -21,7 +22,6 @@ export default function Add() {
     }
 
     const pickImage = async () => {
-        // const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -53,59 +53,62 @@ export default function Add() {
     }
     return (
         <View style={styles.container}>
-            <View style={styles.cameraContainer}>
-                <Camera
-                    ref={ref => setCamera(ref)}
-                    style={styles.camera}
-                    type={type}
-                    ratio={'1:1'} />
+            {!image &&
+                <View style={styles.cameraContainer}>
+                    <Camera
+                        ref={ref => setCamera(ref)}
+                        style={styles.camera}
+                        ratio={"16:9"}
+                        type={type} />
 
-                <View style={styles.cameraButtonContainer}>
-                    <TouchableOpacity
-                        style={[styles.button, styles.cameraButton]}
-                        onPress={() => {
-                            takePicture();
-                        }}>
-                        <Ionicons name='md-camera' options size={DIMENS.iconSize} color={COLORS.active} />
-                    </TouchableOpacity>
+                    <View style={styles.cameraButtonContainer}>
+                        <TouchableOpacity
+                            style={[commonStyles.button, styles.galleryButton]}
+                            onPress={() => {
+                                pickImage()
+                            }}>
+                            <Ionicons name='md-image' options size={DIMENS.iconSize} color={COLORS.active} />
+                        </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                            setType(type === CameraType.back ? CameraType.front : CameraType.back);
-                        }}>
-                        <Ionicons name='md-sync-outline' options size={DIMENS.iconSize} color={COLORS.active} />
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[commonStyles.button, styles.cameraButton]}
+                            onPress={() => {
+                                takePicture();
+                            }}>
+                            <Ionicons name='md-camera' options size={DIMENS.iconSize} color={COLORS.active} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[commonStyles.button, styles.flipButton]}
+                            onPress={() => {
+                                setType(type === CameraType.back ? CameraType.front : CameraType.back);
+                            }}>
+                            <Ionicons name='md-sync' options size={DIMENS.iconSize} color={COLORS.active} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            }
+
             {image &&
-                <View style={{ flex: 1 }}>
-                    <Image source={{ uri: image }} resizeMode={'cover'} style={{ flex: 1 }} />
+                <View style={styles.previewContainer}>
+                    <Image source={{ uri: image }} resizeMode={'cover'} style={{ flex: 1, scaleX: type === CameraType.back ? 1 : -1 }} />
                     <TouchableOpacity
-                        style={[styles.button, styles.closeButton]}
+                        style={[commonStyles.button, styles.closeButton]}
                         onPress={() => {
                             removePreview();
                         }}>
                         <Ionicons name='md-close' options size={DIMENS.iconSize} color={COLORS.active} />
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={commonStyles.button}
+                        onPress={() =>
+                            navigation.navigate(SCREENS.save, { image })
+                        }>
+                        <Ionicons name='md-save' options size={DIMENS.iconSize} color={COLORS.active} />
+                    </TouchableOpacity>
                 </View>
             }
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                    pickImage()
-                }}>
-                <Ionicons name='md-image' options size={DIMENS.iconSize} color={COLORS.active} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() =>
-                    navigation.navigate(SCREENS.save, { image })
-                }>
-                <Ionicons name='md-save' options size={DIMENS.iconSize} color={COLORS.active} />
-            </TouchableOpacity>
         </View>
     );
 }
@@ -113,24 +116,19 @@ export default function Add() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: COLORS.active
     },
     camera: {
         flex: 1,
-        aspectRatio: 1,
     },
     cameraContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        position: 'absolute'
+        position: 'absolute',
+        height: "100%",
+        width: "100%"
     },
-    button: {
-        backgroundColor: COLORS.accent,
-        margin: 20,
-        width: DIMENS.buttonSize,
-        height: DIMENS.buttonSize,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: DIMENS.buttonRadius
+    cameraButton: {
+        borderRadius: 50,
+
     },
     closeButton: {
         backgroundColor: COLORS.accentLighter,
@@ -142,8 +140,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: "100%",
-        alignContent: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
+        flexDirection: 'row',
+        backgroundColor: COLORS.active,
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    previewContainer: {
+        flex: 1
     }
 });

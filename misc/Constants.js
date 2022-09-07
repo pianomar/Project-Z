@@ -6,7 +6,8 @@ export const SCREENS = {
   feed: "Feed",
   add: "Add",
   profile: "Profile",
-  save: "Save"
+  save: "Save",
+  search: "Search"
 };
 
 export const STRINGS = {
@@ -16,7 +17,9 @@ export const STRINGS = {
   register: 'Registrarse',
   errorMessage: 'Hubo un error!',
   caption: 'Agrega un texto...',
-  progress: 'Ha subido '
+  progress: 'Ha subido ',
+  follow: 'Seguir',
+  following: 'Siguiendo'
 }
 
 export const FIREBASE_CONFIG = {
@@ -33,7 +36,10 @@ export const FIRESTORE = {
   posts: "posts",
   userPosts: "userPosts",
   users: "users",
-  creationField: "creation"
+  following: "following",
+  userFollowing: "userFollowing",
+  creationField: "creation",
+  nameField: "name"
 }
 
 export const COLORS = {
