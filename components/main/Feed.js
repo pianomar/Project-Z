@@ -22,18 +22,20 @@ export default function Feed(userData) {
 
     useEffect(() => {
         let posts = []
-        alert(currentFollowing.length + " " + usersLoaded)
-        if (usersLoaded == currentFollowing.length) {
+        
+        if (currentFollowing.length >= usersLoaded) {
             for (let i = 0; i < currentFollowing.length; i++) {
-                console.log("is thi snull" + JSON.stringify(users))
+                
                 const user = users.find(el => el.uid === currentFollowing[i])
                 if (user != undefined) {
+                    
                     let userPosts = user.posts
                     if (userPosts != undefined) {
+                        
                         userPosts.forEach(post => {
                             post.userName = user.name
                         });
-                        console.log("hello ====" + userPosts)
+                        
                         posts = [...posts, ...userPosts]
                     }
                 }

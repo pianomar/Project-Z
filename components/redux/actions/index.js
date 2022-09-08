@@ -45,7 +45,6 @@ export function fetchUserFollowing(usersState) {
         const db = getFirestore();
         const userPostsRef = collection(db, FIRESTORE.following, auth.currentUser.uid, FIRESTORE.userFollowing)
         onSnapshot(userPostsRef, (snapshot) => {
-            alert('damn')
             const following = snapshot.docs.map(doc =>
                 doc.id
             )
@@ -61,7 +60,7 @@ export function fetchUserFollowing(usersState) {
 export function fetchUsersData(uid, usersState) {
     return (async (dispatch) => {
         const found = usersState.users.some(el => { 
-            console.log("HERE: " + el.uid + " " + uid)
+            
             el.uid === uid 
         })
 
