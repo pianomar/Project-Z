@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { FIRESTORE, STRINGS } from '../../misc/Constants';
 import { fetchUserFollowing, fetchUserPosts } from '../redux/actions';
 import { useDispatch } from 'react-redux';
+import FeedItem from './FeedItem';
 
 export default function Feed(userData) {
     const isFocused = useIsFocused()
@@ -21,12 +22,20 @@ export default function Feed(userData) {
 
     useEffect(() => {
         let posts = []
-
+        alert(currentFollowing.length + " " + usersLoaded)
         if (usersLoaded == currentFollowing.length) {
             for (let i = 0; i < currentFollowing.length; i++) {
+                console.log("is thi snull" + JSON.stringify(users))
                 const user = users.find(el => el.uid === currentFollowing[i])
                 if (user != undefined) {
-                    posts = [...posts, ...user.posts]
+                    let userPosts = user.posts
+                    if (userPosts != undefined) {
+                        userPosts.forEach(post => {
+                            post.userName = user.name
+                        });
+                        console.log("hello ====" + userPosts)
+                        posts = [...posts, ...userPosts]
+                    }
                 }
             }
         }
@@ -35,27 +44,17 @@ export default function Feed(userData) {
             return x.creation < y.creation
         })
 
-        console.log["ss*******" +  posts[0] ]
-
         setPosts(posts)
-        console.log(JSON.stringify(posts))
-    }, [usersLoaded])
+    }, [usersLoaded, isFocused])
 
     return (
         <View style={styles.container}>
             <View style={styles.galleryContainer}>
                 <FlatList
+                    showsVerticalScrollIndicator={false}
                     horizontal={false}
                     data={posts}
-                    renderItem={({ item }) => (
-                        <View>
-                            {/* <Text>{item.user.name}</Text> */}
-                            <Image
-                                style={styles.image}
-                                source={{ uri: item.downloadURL }}
-                            />
-                        </View>
-                    )}
+                    renderItem={({ item }) => <FeedItem item={item} />}
                     keyExtractor={item => item.id}
                 />
             </View>
@@ -66,10 +65,5 @@ export default function Feed(userData) {
 const styles = StyleSheet.create({
     container: {
         margin: 20
-    },
-    image: {
-        flex: 1,
-        aspectRatio: 1 / 1,
-        margin: 2
     }
 })

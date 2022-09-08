@@ -18,8 +18,14 @@ export const STRINGS = {
   errorMessage: 'Hubo un error!',
   caption: 'Agrega un texto...',
   progress: 'Ha subido ',
+  uploadSuccessful: 'Tu imagen subió exitosamente',
   follow: 'Seguir',
-  following: 'Siguiendo'
+  following: 'Siguiendo',
+  datePre: 'Hace ',
+  days: 'dias',
+  day: 'dia',
+  posts: 'Posteos',
+  search: 'Busca un usuario por nombre...',
 }
 
 export const FIREBASE_CONFIG = {
@@ -57,5 +63,6 @@ export const PERMISIONS = {
 export const DIMENS = {
   buttonSize: 46,
   iconSize: 26,
-  buttonRadius: 5
+  buttonRadius: 5,
+  imageRadius: 10
 }

@@ -30,14 +30,14 @@ export default function Save(props) {
 
         uploadTask.on('state_changed', (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setProgress(STRINGS.progress + progress + '%');
+            setProgress(STRINGS.progress + Math.floor(progress) + '%');
 
         }, (error) => { // error
             alert(STRINGS.errorMessage + " " + error)
         }, () => { // success
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 savePostData(downloadURL)
-                alert(STRINGS.progress + " " + downloadURL);
+                alert(STRINGS.uploadSuccessful);
             });
         })
     }

@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     },
     cameraButton: {
         borderRadius: 50,
-
     },
     closeButton: {
         backgroundColor: COLORS.accentLighter,

@@ -3,14 +3,13 @@ import { getAuth } from 'firebase/auth'
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
 import React from 'react'
 import { useState } from 'react'
-import { FlatList, Text, TextInput, View, TouchableOpacity } from 'react-native'
-import { FIRESTORE, SCREENS } from '../../misc/Constants'
+import { FlatList, Text, TextInput, View, TouchableOpacity, StyleSheet } from 'react-native'
+import { COLORS, DIMENS, FIRESTORE, SCREENS, STRINGS } from '../../misc/Constants'
+import UserSearchItem from './UserSearchItem'
 
 require('firebase/firestore')
 
 export default function Search() {
-    const navigation = useNavigation()
-
     const [users, setUsers] = useState([])
 
     const fetchUsers = async (searchQuery) => {
@@ -31,24 +30,53 @@ export default function Search() {
     }
 
     return (
-        <View>
-            <TextInput onChangeText={(query) => fetchUsers(query)}></TextInput>
+        <View style={styles.container}>
+            <TextInput
+                style={styles.searchText}
+                onChangeText={(query) => fetchUsers(query)}
+                placeholder={STRINGS.search}></TextInput>
 
-            <FlatList
-                numColumns={1}
-                horizontal={false}
-                data={users}
-                renderItem={({ item }) => (
-                    <View>
-                        <TouchableOpacity onPress={() => {
-                            navigation.navigate(SCREENS.profile, { uid: item.id })
-                        }}>
-                            <Text>{item.name}</Text>
-                            <Text>{item.email}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            />
+            {users.length > 0 &&
+                <View>
+                    <Text style={styles.bigTitle}>Usuarios:</Text>
+                    <FlatList
+                        style={styles.usersList}
+                        numColumns={1}
+                        horizontal={false}
+                        data={users}
+                        renderItem={({ item }) => (
+                            <View>
+                                <UserSearchItem item={item} />
+                            </View>
+                        )}
+                    />
+                </View>
+            }
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+    },
+    usersList: {
+        width: "100%"
+    },
+    searchText: {
+        height: DIMENS.buttonSize,
+        borderBottomColor: COLORS.active,
+        backgroundColor: COLORS.inactive,
+        borderBottomWidth: 1,
+        paddingLeft: 10,
+        borderRadius: DIMENS.buttonRadius,
+        width: "100%",
+        marginBottom: 40
+    },
+    bigTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: COLORS.active,
+        marginBottom: 20
+    }
+})

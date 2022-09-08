@@ -1,24 +1,26 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import AppLoading from 'expo-app-loading';
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native'
 import { FlatList, Image } from 'react-native';
 import { useSelector } from 'react-redux';
-import { FIRESTORE, STRINGS } from '../../misc/Constants';
+import { COLORS, DIMENS, FIRESTORE, SCREENS, STRINGS } from '../../misc/Constants';
 import { fetchUserFollowing, fetchUserPosts } from '../redux/actions';
 import { useDispatch } from 'react-redux';
 
 export default function Profile(userData) {
   const isFocused = useIsFocused()
 
+  const navigation = useNavigation()
+
   const currentUserPosts = useSelector(state => state.user.posts)
   const currentUser = useSelector(state => state.user.currentUser)
   const currentFollowing = useSelector(state => state.user.following)
   const usersState = useSelector(state => state.users)
   const dispatch = useDispatch();
-  
+
   const [userPosts, setUserPosts] = useState([])
   const [user, setUser] = useState(null)
   const [following, setFollowing] = useState(false)
@@ -35,15 +37,22 @@ export default function Profile(userData) {
       setUser(currentUser)
     } else {
       fetchEverything()
+      navigation.setOptions({
+        headerRight: () => (
+          <Button
+            onPress={() => {
+              navigation.navigate(SCREENS.profile, { uid: getAuth().currentUser.uid })
+              setUserPosts(currentUserPosts)
+              setUser(currentUser)
+              navigation.setOptions({ headerRight: null });
+            }}
+            title="Volver a mi perfil" />
+        ),
+      });
     }
-    
-    setFollowing(currentFollowing.indexOf(uid) > -1)
-  }, [isFocused, currentFollowing])
 
-  useEffect(() => {
-    dispatch(fetchUserFollowing(usersState))
-    dispatch(fetchUserPosts())
-  }, [isFocused])
+    setFollowing(currentFollowing.indexOf(uid) > -1)
+  }, [currentFollowing, isFocused])
 
   const fetchEverything = async () => {
     const docSnap = await getDoc(doc(db, FIRESTORE.users, uid));
@@ -77,26 +86,43 @@ export default function Profile(userData) {
   return (
     <View style={styles.container}>
       <View>
-        <Text>Hello, {user.name}</Text>
-        <Text>{user.email}</Text>
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.nameText}>{user.name}</Text>
+          <Text style={styles.emailText}>{user.email}</Text>
 
-        {!isCurrentUser &&
-          <View>
-            {following ? (
-              <TouchableOpacity
-                onPress={() => onUnfollow()}
-              >
-                <Text>{STRINGS.following}</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => onFollow()}
-              >
-                <Text>{STRINGS.follow}</Text>
-              </TouchableOpacity>
-            )}
+          {!isCurrentUser &&
+            <View style={styles.followButton}>
+              {following ? (
+                <TouchableOpacity
+                  onPress={() => onUnfollow()}
+                >
+                  <Text style={{ color: COLORS.activeLighter }}>{STRINGS.following}</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => onFollow()}
+                >
+                  <Text style={{ color: COLORS.activeLighter }}>{STRINGS.follow}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          }
+        </View>
+
+        {isCurrentUser &&
+          <View style={styles.extraInfo}>
+            <View style={{ alignSelf: 'flex-start', alignItems: 'center' }}>
+              <Text style={styles.extraInfoText}>{STRINGS.following}</Text>
+              <Text style={styles.nameText}>{currentFollowing.length}</Text>
+            </View>
+
+            <View style={{ alignSelf: 'flex-end', alignItems: 'center' }}>
+              <Text style={styles.extraInfoText}>{STRINGS.posts}</Text>
+              <Text style={styles.nameText}>{userPosts.length}</Text>
+            </View>
           </View>
         }
+
       </View>
 
       <View style={styles.galleryContainer}>
@@ -125,5 +151,29 @@ const styles = StyleSheet.create({
     flex: 1,
     aspectRatio: 1 / 1,
     margin: 2
+  },
+  userInfoContainer: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    margin: 20
+  },
+  emailText: {
+    color: COLORS.inactive
+  },
+  nameText: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  extraInfo: { width: '100%', alignItems: 'center', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 40, marginTop: 10 },
+  extraInfoText: {
+    color: COLORS.inactive,
+    fontWeight: 'bold'
+  },
+  followButton: {
+    backgroundColor: COLORS.accent,
+    padding: 10,
+    margin: 10,
+    borderRadius: DIMENS.buttonRadius,
+
   }
 })
