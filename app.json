@@ -2,7 +2,10 @@
   "expo": {
     "name": "proyecto_z",
     "slug": "proyecto_z",
-    "platforms" : ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,16 +22,29 @@
       "**/*"
     ],
     "ios": {
+      "bundlerIdentifier": "com.coderhouse.proyecto_z",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.coderhouse.proyecto_z",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "03e8716d-7c9d-4b82-8d98-f58dd9fa19f6"
+      }
     }
   }
 }
