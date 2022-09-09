@@ -5,6 +5,7 @@ import React from 'react'
 import { useState } from 'react'
 import { FlatList, Text, TextInput, View, TouchableOpacity, StyleSheet } from 'react-native'
 import { COLORS, DIMENS, FIRESTORE, SCREENS, STRINGS } from '../../misc/Constants'
+import commonStyles from '../../styles/commonStyles'
 import UserSearchItem from './UserSearchItem'
 
 require('firebase/firestore')
@@ -32,7 +33,7 @@ export default function Search() {
     return (
         <View style={styles.container}>
             <TextInput
-                style={styles.searchText}
+                style={[commonStyles.input, styles.searchText]}
                 onChangeText={(query) => fetchUsers(query)}
                 placeholder={STRINGS.search}></TextInput>
 
@@ -64,12 +65,6 @@ const styles = StyleSheet.create({
         width: "100%"
     },
     searchText: {
-        height: DIMENS.buttonSize,
-        borderBottomColor: COLORS.active,
-        backgroundColor: COLORS.inactive,
-        borderBottomWidth: 1,
-        paddingLeft: 10,
-        borderRadius: DIMENS.buttonRadius,
         width: "100%",
         marginBottom: 40
     },

@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { COLORS, DIMENS, FIRESTORE, SCREENS, STRINGS } from '../../misc/Constants';
 import { fetchUserFollowing, fetchUserPosts } from '../redux/actions';
 import { useDispatch } from 'react-redux';
+import commonStyles from '../../styles/commonStyles';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Profile(userData) {
   const isFocused = useIsFocused()
@@ -39,14 +41,19 @@ export default function Profile(userData) {
       fetchEverything()
       navigation.setOptions({
         headerRight: () => (
-          <Button
+          <TouchableOpacity
+            style={commonStyles.button}
             onPress={() => {
               navigation.navigate(SCREENS.profile, { uid: getAuth().currentUser.uid })
               setUserPosts(currentUserPosts)
               setUser(currentUser)
               navigation.setOptions({ headerRight: null });
             }}
-            title="Volver a mi perfil" />
+          >
+            <View>
+              <Ionicons name='md-arrow-back-circle' options size={26} color={COLORS.active} />
+            </View>
+          </TouchableOpacity>
         ),
       });
     }

@@ -14,6 +14,7 @@ export const STRINGS = {
   name: 'Nombre',
   email: 'E-mail',
   password: 'Contraseña',
+  login: 'Ingresar',
   register: 'Registrarse',
   errorMessage: 'Hubo un error!',
   caption: 'Agrega un texto...',
@@ -26,6 +27,7 @@ export const STRINGS = {
   day: 'dia',
   posts: 'Posteos',
   search: 'Busca un usuario por nombre...',
+  noFollowers: 'No has seguido a ninguna persona todavia, puedes buscar personas en la lupa'
 }
 
 export const FIREBASE_CONFIG = {
